@@ -32,17 +32,21 @@ e.	Quantidade de tipos de culinária servidas pelos restaurantes cadastrados na 
 f.	Mapa com a localização exata de cada restaurante cadastrado na No Hunger
 
 ## Visão de Crescimentos dos Países (Country View)
-a.	Número de restaurantes cadastrados em cada país
 
-b.	Número de cidades atendidas em cada país 
+### Overview:
+a.	Número e porcentagem de restaurantes cadastrados em cada país
 
-c.	Comparação entre preço médio, avaliação média e número de avaliações realizadas em cada país
+b.	Número  e porcentagem de cidades atendidas em cada país 
 
-d.	Ranking de notas média dos restaurantes de cada país
+### Price/Rating Analyses:
 
-e.	Ranking com a média do número de avaliações realizadas nos restaurantes de cada país
+a.	Comparação entre preço médio, avaliação média e número de avaliações realizadas em cada país
 
-f.	Ranking de países baseado no preço médio de uma refeição para duas pessoas
+b.	Ranking de notas média dos restaurantes de cada país
+
+c.	Ranking com a média do número de avaliações realizadas nos restaurantes de cada país
+
+d.	Ranking de países baseado no preço médio de uma refeição para duas pessoas
 
 ## Visão de Crescimento das Cidades (City View)
 ### Overview:
