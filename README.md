@@ -79,7 +79,7 @@ d.	Os dez tipos de culinária pior avaliados na plataforma
 
 # O produto final do projeto
 Painel online, hospedado em um Cloud e disponível para acesso em qualquer dispositivo conectado à internet.
-O painal pode ser acessado através desse link: https://priscila-portela-no-hungry.streamlit.app/
+O painal pode ser acessado através desse link: https://no-hunger.streamlit.app/
 
 # Conclusão
 O objetivo desse projeto foi criar um conjunto de gráficos e tabelas que exibam as métricas gerais em um certo momento da empresa para o CEO.
