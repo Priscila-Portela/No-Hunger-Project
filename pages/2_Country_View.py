@@ -183,7 +183,7 @@ def country_metric_mean(df, numeric_variable, title_variable, title):
             - title_variable: Title of the "x" axis
             - title_graph: Title of the chart
 
-        Output: Output: Horizontal bar chart
+        Output: Horizontal bar chart
     """   
 
     df_aux = df.loc[:, [numeric_variable, 'Country_Name']].groupby('Country_Name').mean().sort_values(by=numeric_variable, ascending=True).round(1).reset_index()
@@ -198,6 +198,40 @@ def country_metric_mean(df, numeric_variable, title_variable, title):
     fig.update_layout(coloraxis_showscale=False)
     fig.update_layout(title_text=title, title_x=0.1)
     return fig
+
+
+
+def country_percentage(df, numeric_variable, title_graph):
+        
+    """ 
+    This function is responsible for generating a pie graph, which groups countries according to a chosen numerical variable.
+    
+        1. Selects the columns of interest
+        2. Groups by country
+        3. Calculates the number of unique values of the variable of interest (numeric_variable) for each grouping
+        4. Calculates the percentage 
+        4. Creates the graph
+        5. Applies white lines to the outline of the bars
+        7. Applies the title to the graph
+        8. Generates the graph with the desired information
+
+        Input: 
+            - df: DataFrame with the necessary data for the calculation
+            - numeric_variable: Numerical variable of interest 
+            - title_graph: Title of the chart
+
+        Output: Pie Graph
+    """   
+
+    cols = [numeric_variable, 'Country_Name']
+    df_aux = df.loc[:, cols].groupby('Country_Name').nunique().reset_index()
+    df_aux['Perc'] = df_aux[numeric_variable] / df_aux[numeric_variable].sum()        
+    fig = px.pie(df_aux, values='Perc', names='Country_Name')
+    
+    fig.update_traces(marker_line_color = 'white', marker_line_width = 1.5)
+    fig.update_layout(title_text=title_graph, title_x=0.2)
+    return fig
+
 
 #------------------------------------Ending Graphics function--------------------------------
 
@@ -238,48 +272,66 @@ st.sidebar.markdown('##### Powered by Priscila Rockenbach Portela')
 
 st.header('🌎 Countries Analysis', divider='red')
 
+tab1, tab2 = st.tabs(['Overview', 'Price/Rating Analyses' ])
+
+#----------------------------------------------------TAB 1--------------------------------------------------------------
+
+with tab1:
+    with st.container(border=True):
+        col1, col2 = st.columns(2)
+
+        with col1:
+            fig = country_metric(df, 'Restaurant ID', '<b>Number of Restaurants</b>', '🌎 Number of restaurants registered per country')
+            st.plotly_chart( fig, use_container_width=True)
+
+        with col2:
+            fig = country_percentage(df, 'Restaurant ID', 'Distribution of restaurants by country')
+            st.plotly_chart(fig, use_container_width=True)
+
+    with st.container(border=True):
+        col1, col2 = st.columns(2)
+
+        with col1:
+            fig = country_metric(df, 'City', '<b>Number of Cities</b>', '📍 Number of Cities registered per Country')
+            st.plotly_chart( fig, use_container_width=True)
+
+        with col2:
+            fig = country_percentage(df, 'City', 'Number of cities registered by country')
+            st.plotly_chart(fig, use_container_width=True)
+
+
+#----------------------------------------------------TAB 2--------------------------------------------------------------
+
+with tab2:
+
 #----------------Container 1---------------
 
-with st.container(border=True):
+    with st.container(border=True):
+        st.markdown("<h1 style='text-align: center; color: #E85246;'><p style='font-size:25px;'><b>Country-wise Costs and Ratings</b></p></h1>", unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2, gap = "large")
+        df_aux = df.loc[:, ['Country_Name', 'Cost_dolar', 'Aggregate rating', 'Votes']].groupby('Country_Name').mean().round(2).sort_values('Cost_dolar', ascending=False).reset_index()
+        column_names = {"Country_Name": "Country",
+                "Cost_dolar": st.column_config.NumberColumn("Price for two people", format="$ %d"),
+                "Aggregate rating": "Rating",
+                "Votes": "Votes"}
+        st.dataframe(df_aux, use_container_width=True, 
+                    height=300, column_config= column_names , 
+                    hide_index=True)
+            
+    #----------------Container 2---------------
 
-    with col1:
-        fig = country_metric(df, 'Restaurant ID', '<b>Number of Restaurants</b>', '🌎 Number of restaurants registered per country')
-        st.plotly_chart( fig, use_container_width=True)
+    with st.container(border=True):
 
-    with col2:
-        fig = country_metric(df, 'City', '<b>Number of Cities</b>', '📍 Number of Cities registered per Country')
-        st.plotly_chart( fig, use_container_width=True)
+        col1, col2, col3 = st.columns(3)
 
-#----------------Container 2---------------
+        with col1:
+            fig = country_metric_mean(df, 'Aggregate rating', '<b>Average rating</b>', '⭐️ Average rating per Country')
+            st.plotly_chart( fig, use_container_width=True)
+            
+        with col2:
+            fig = country_metric_mean(df, 'Votes', '<b>Number of Evaluations</b>', '🗒️ Average evaluations per Country')
+            st.plotly_chart( fig, use_container_width=True)
 
-with st.container(border=True):
-    st.markdown("<h1 style='text-align: center; color: #E85246;'><p style='font-size:25px;'><b>Country-wise Costs and Ratings</b></p></h1>", unsafe_allow_html=True)
-
-    df_aux = df.loc[:, ['Country_Name', 'Cost_dolar', 'Aggregate rating', 'Votes']].groupby('Country_Name').mean().round(2).sort_values('Cost_dolar', ascending=False).reset_index()
-    column_names = {"Country_Name": "Country",
-            "Cost_dolar": st.column_config.NumberColumn("Price for two people", format="$ %d"),
-            "Aggregate rating": "Rating",
-            "Votes": "Votes"}
-    st.dataframe(df_aux, use_container_width=True, 
-                 height=300, column_config= column_names , 
-                 hide_index=True)
-        
-#----------------Container 3---------------
-
-with st.container(border=True):
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        fig = country_metric_mean(df, 'Aggregate rating', '<b>Average rating</b>', '⭐️ Average rating per Country')
-        st.plotly_chart( fig, use_container_width=True)
-        
-    with col2:
-        fig = country_metric_mean(df, 'Votes', '<b>Number of Evaluations</b>', '🗒️ Average evaluations per Country')
-        st.plotly_chart( fig, use_container_width=True)
-
-    with col3:    
-        fig = country_metric_mean(df, 'Cost_dolar', '<b>Average price per two</b>', '💲 Average Cost for Two People Worldwide')
-        st.plotly_chart( fig, use_container_width=True)
+        with col3:    
+            fig = country_metric_mean(df, 'Cost_dolar', '<b>Average price per two</b>', '💲 Average Cost for Two People Worldwide')
+            st.plotly_chart( fig, use_container_width=True)
